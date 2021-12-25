@@ -2,6 +2,7 @@ package com.bridgeit.jdbcpayroll;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,18 +14,19 @@ public class EmployeePayRollService {
 
 	Connection connection = null;
 	Statement statement = null;
+	PreparedStatement preparedStatement = null;
 	ResultSet resultSet = null;
 	public static List<EmployeePayroll> list = new ArrayList<EmployeePayroll>();
 	EmployeePayroll payroll = new EmployeePayroll();
 	Scanner scanner = new Scanner(System.in);
 
-	public int updateData(Statement statement) {
+	public int updateData(PreparedStatement preparedStatement) {
 
 		System.out.println("update quary : ");
 		String updateString = scanner.nextLine();
 		int count = 0;
 		try {
-			count = statement.executeUpdate(updateString);
+			count = preparedStatement.executeUpdate(updateString);
 			System.out.println("successfully updated...");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -44,7 +46,7 @@ public class EmployeePayRollService {
 		return resultSet;
 	}
 
-	public Statement getConnection() {
+	public PreparedStatement getConnection() {
 
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
 		String userName = "root";
@@ -53,11 +55,11 @@ public class EmployeePayRollService {
 		try {
 			connection = DriverManager.getConnection(jdbcURL, userName, password);
 			System.out.println("Connection is successfull...... " + connection);
-			statement = connection.createStatement();
+			preparedStatement = connection.prepareStatement("select * from employee_payroll where emp_name='musai'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return statement;
+		return preparedStatement;
 	}
 
 	public void printRetrivedData(ResultSet resultSet) throws ColumnMissMatchException {
