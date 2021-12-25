@@ -1,5 +1,6 @@
 package com.bridgeit.jdbcpayroll;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -13,6 +14,7 @@ public class EmployeePayRollMain {
 		EmployeePayRollService employeePayRollService = new EmployeePayRollService();
 		Statement statement = null;
 		ResultSet resultSet = null;
+		PreparedStatement preparedStatement =null;
 		int exit=0;
 		Scanner scanner = new Scanner(System.in);
 		while (EXIT != exit) {
@@ -27,7 +29,7 @@ public class EmployeePayRollMain {
 				resultSet = employeePayRollService.retrieveData(statement);
 				break;
 			case 3:
-				employeePayRollService.updateData(statement);
+				employeePayRollService.updateData(preparedStatement);
 				break;
 			case 4:
 				try {

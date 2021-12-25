@@ -3,6 +3,7 @@ package com.bridgeit.jdbcpayroll;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 import org.junit.BeforeClass;
@@ -20,8 +21,8 @@ public class EmployeePayRollTest {
 
 	@Test
 	public void shouldAnswerWithTrue() {
-		Statement statement = employeePayRollService.getConnection();
-		int actual = employeePayRollService.updateData(statement);
+		PreparedStatement preparedStatement = employeePayRollService.getConnection();
+		int actual = employeePayRollService.updateData(preparedStatement);
 		assertEquals(1, actual);
 	}
 }
