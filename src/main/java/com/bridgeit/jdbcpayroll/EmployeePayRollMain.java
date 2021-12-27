@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class EmployeePayRollMain {
 
-	private static final int EXIT = 6;
+	private static final int EXIT = 7;
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
@@ -25,7 +25,8 @@ public class EmployeePayRollMain {
 		Scanner scanner = new Scanner(System.in);
 		while (EXIT != exit) {
 			System.out.println("enter \n 1.to create connection and statement \n 2.to retrieve Data "
-					+ "\n 3.to update data \n 4.to print retrieve data \n 5.to select employees who join between date \n"+ EXIT + ".to exit");
+					+ "\n 3.to update data \n 4.to print retrieve data \n 5.to select employees who join between date \n"
+					+ "6.retrieve mathoperations like sumavg max min \n"+ EXIT + ".to exit");
 			int key = scanner.nextInt();
 			switch (key) {
 			case 1:
@@ -46,6 +47,9 @@ public class EmployeePayRollMain {
 				break;
 			case 5:
 				employeePayRollService.retrieveEmployees();
+				break;
+			case 6:
+				employeePayRollService.retrieveMathOPerations();
 				break;
 			case EXIT:
 				employeePayRollService.close();
