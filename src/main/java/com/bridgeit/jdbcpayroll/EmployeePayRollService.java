@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,40 +12,44 @@ import java.util.Scanner;
 public class EmployeePayRollService {
 
 	Connection connection = null;
-	Statement statement = null;
 	PreparedStatement preparedStatement = null;
 	ResultSet resultSet = null;
 	public static List<EmployeePayroll> list = new ArrayList<EmployeePayroll>();
 	EmployeePayroll payroll = new EmployeePayroll();
 	Scanner scanner = new Scanner(System.in);
 
-	public int updateData(PreparedStatement preparedStatement) {
+	public int updateData(Connection connection) {
 
-		System.out.println("update quary : ");
-		String updateString = scanner.nextLine();
+		System.out.println("update Quiry : ");
+		String updatedQuiry = scanner.nextLine();
 		int count = 0;
 		try {
-			count = preparedStatement.executeUpdate(updateString);
-			System.out.println("successfully updated...");
+			preparedStatement = connection.prepareStatement(updatedQuiry);
+			count = preparedStatement.executeUpdate();
+			System.out.println("successfully updated..."+count);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return count;
 	}
 
-	public ResultSet retrieveData(Statement statement) {
+	public ResultSet retrieveData(Connection connection) {
 
 		System.out.println("enter Select quary : ");
-		String selectString = scanner.nextLine();
+		String selectStatement = scanner.nextLine();
 		try {
-			resultSet = statement.executeQuery(selectString);
+			preparedStatement = connection.prepareStatement(selectStatement);
+			resultSet = preparedStatement.executeQuery();
+			
+			System.out.println("successfully retrived...");
+			//System.out.println(resultSet.getDouble(1));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return resultSet;
 	}
 
-	public PreparedStatement getConnection() {
+	public Connection getConnection() {
 
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
 		String userName = "root";
@@ -55,11 +58,10 @@ public class EmployeePayRollService {
 		try {
 			connection = DriverManager.getConnection(jdbcURL, userName, password);
 			System.out.println("Connection is successfull...... " + connection);
-			preparedStatement = connection.prepareStatement("select * from employee_payroll where emp_name='musai'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return preparedStatement;
+		return connection;
 	}
 
 	public void printRetrivedData(ResultSet resultSet) throws ColumnMissMatchException {
@@ -81,8 +83,38 @@ public class EmployeePayRollService {
 				list.add(payroll);
 			}
 		} catch (Exception ex) {
-			throw new ColumnMissMatchException("column miss match - check the fields in database");
+			ex.printStackTrace();
 		}
 		System.out.println(list);
+	}
+
+	public void retrieveEmployees() {
+
+		System.out.println("enter from date in yyyy-mm-dd");
+		String date =scanner.nextLine();
+		try {
+			preparedStatement = connection.prepareStatement("select emp_name from employee_payroll where startdate between cast('"+date+"' as date) and date(now());");
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("emp_name");
+			while (resultSet.next()) {
+				System.out.println(resultSet.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void close() {
+		try {
+			preparedStatement.close();
+			connection.close();
+			System.out.println("connection closed.......");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
